@@ -1,5 +1,5 @@
 import React from "react";
-import TVPresenter from "./TVPresenter";
+import Presenter from "./TVPresenter";
 import { tvApi } from "api";
 
 export default class extends React.Component {
@@ -10,26 +10,42 @@ export default class extends React.Component {
     error: null,
     loading: true,
   };
+
+  getTopRated() {
+    return tvApi.topRated();
+  }
+
+  getAiringToday() {
+    return tvApi.airingToday();
+  }
+
+  getPopular() {
+    return tvApi.popular();
+  }
+
   async componentDidMount() {
     try {
       const {
         data: { results: topRated },
-      } = await tvApi.topRated();
-      const {
-        data: { results: popular },
-      } = await tvApi.popular();
+      } = await this.getTopRated();
+
       const {
         data: { results: airingToday },
-      } = await tvApi.airingToday();
+      } = await this.getAiringToday();
+
+      const {
+        data: { results: popular },
+      } = await this.getPopular();
 
       this.setState({
         topRated,
-        popular,
         airingToday,
+        popular,
       });
     } catch (err) {
+      //   console.error(err.message);
       this.setState({
-        error: "Can't find TV information.",
+        error: "Can't find TV programs information.",
       });
     } finally {
       this.setState({
@@ -37,12 +53,12 @@ export default class extends React.Component {
       });
     }
   }
-  //api 가져오는 것과 에러 로직을 여기다 작성할 것이다.
 
   render() {
     const { topRated, airingToday, popular, error, loading } = this.state;
+
     return (
-      <TVPresenter
+      <Presenter
         topRated={topRated}
         airingToday={airingToday}
         popular={popular}

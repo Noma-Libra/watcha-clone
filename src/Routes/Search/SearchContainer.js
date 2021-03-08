@@ -1,6 +1,6 @@
-import { movieApi, tvApi } from "api";
 import React from "react";
-import SearchPresenter from "./SearchPresenter";
+import Preasenter from "./SearchPresenter";
+import { tvApi, movieApi } from "api";
 
 export default class extends React.Component {
   state = {
@@ -11,53 +11,79 @@ export default class extends React.Component {
     error: null,
   };
 
-  handleSubmit = () => {
+  handleSubmit = (event) => {
+    event.preventDefault();
     const { searchTerm } = this.state;
     if (searchTerm !== "") {
-      this.searchTerm(searchTerm);
+      this.searchByTerm();
     }
   };
 
-  searchByTerm = async () => {
+  updateTerm = (event) => {
+    const {
+      target: { value },
+    } = event;
+
+    this.setState({
+      searchTerm: value,
+    });
+  };
+
+  getSearchTV(searchTerm) {
+    return tvApi.search(searchTerm);
+  }
+
+  getSearchMovie(searchTerm) {
+    return movieApi.search(searchTerm);
+  }
+
+  async searchByTerm() {
     const { searchTerm } = this.state;
-    this.setState({ loading: true });
+    this.setState({
+      loading: true,
+    });
+
     try {
       const {
         data: { results: movieResults },
-      } = await movieApi.search(searchTerm);
+      } = await this.getSearchMovie(searchTerm);
+
       const {
         data: { results: tvResults },
-      } = await tvApi.search(searchTerm);
-      this.setState({
-        loading: true,
-      });
+      } = await this.getSearchTV(searchTerm);
+
       this.setState({
         movieResults,
         tvResults,
       });
     } catch (err) {
+      console.error(err.message);
       this.setState({
-        error: "Can't find reuslts ",
+        error: "Can't find results",
       });
     } finally {
       this.setState({
-        lading: false,
+        loading: false,
       });
     }
-  };
+  }
 
-  //api 가져오는 것과 에러 로직을 여기다 작성할 것이다.
+  /*
+    테스트 용 ComponentDidMount 삭제해야 함
+  */
 
   render() {
     const { movieResults, tvResults, searchTerm, loading, error } = this.state;
+
     return (
-      <SearchPresenter
+      <Preasenter
         movieResults={movieResults}
         tvResults={tvResults}
         searchTerm={searchTerm}
         loading={loading}
         error={error}
         handleSubmit={this.handleSubmit}
+        updateTerm={this.updateTerm}
       />
     );
   }

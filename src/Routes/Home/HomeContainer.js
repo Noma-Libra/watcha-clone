@@ -1,6 +1,6 @@
-import { movieApi } from "api";
 import React from "react";
-import HomePresenter from "./HomePresenter";
+import Presenter from "./HomePresenter";
+import { movieApi } from "api";
 
 export default class extends React.Component {
   state = {
@@ -11,38 +11,57 @@ export default class extends React.Component {
     loading: true,
   };
 
+  /*
+    로직 및 API 호출 그리고 에러 처리를 작성함
+  */
+
+  getNowPlaying() {
+    return movieApi.nowPlaying();
+  }
+
+  getUpcoming() {
+    return movieApi.upcoming();
+  }
+
+  getPopular() {
+    return movieApi.popular();
+  }
+
   async componentDidMount() {
     try {
       const {
         data: { results: nowPlaying },
-      } = await movieApi.nowPlaying();
+      } = await this.getNowPlaying();
 
       const {
         data: { results: upcoming },
-      } = await movieApi.upcoming();
+      } = await this.getUpcoming();
 
       const {
         data: { results: popular },
-      } = await movieApi.popular();
+      } = await this.getPopular();
 
       this.setState({
         nowPlaying,
         upcoming,
         popular,
       });
-    } catch (err) {
-      this.setState({ error: "Can't find moive information." });
+    } catch {
+      this.setState({
+        error: "Can't find moives information.",
+      });
     } finally {
-      this.setState({ loading: false });
+      this.setState({
+        loading: false,
+      });
     }
   }
 
-  //api 가져오는 것과 에러 로직을 여기다 작성할 것이다.
-
   render() {
     const { nowPlaying, upcoming, popular, error, loading } = this.state;
+    console.log(this.state);
     return (
-      <HomePresenter
+      <Presenter
         nowPlaying={nowPlaying}
         upcoming={upcoming}
         popular={popular}

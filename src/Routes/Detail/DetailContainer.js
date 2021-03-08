@@ -8,6 +8,7 @@ export default class extends React.Component {
     const {
       location: { pathname },
     } = props;
+
     this.state = {
       result: null,
       error: null,
@@ -17,30 +18,28 @@ export default class extends React.Component {
   }
 
   async componentDidMount() {
-    // 기본적으로 리액트는 라우트에 값을 이어 받을 수 있다.
-    // movie/:id 하면 this.props에 id 값을 받아낼 수 있따.
     const {
       match: {
         params: { id },
       },
       history: { push },
-      location: { pathname },
     } = this.props;
+    const parseId = parseInt(id);
     const { isMovie } = this.state;
-    const parsedId = parseInt(id);
-    if (isNaN(parsedId)) {
-      return push("/");
+
+    if (isNaN(parseId)) {
+      return push("/"); //return 하는 이유는 함수가 종료되서 홈으로 돌아가서도 함수가 실행되지 않게하기 위해서이다.
     }
+
     let result = null;
     try {
       if (isMovie) {
-        // const === ( vairables define )
-        ({ data: result } = await movieApi.movieDetailById(parsedId));
+        ({ data: result } = await movieApi.movieDetailById(parseId));
       } else {
-        ({ data: result } = await movieApi.movieDetailById(parsedId));
+        ({ data: result } = await tvApi.tvDetailById(parseId));
       }
-    } catch (err) {
-      this.setState({ error: "Can't find anything" });
+    } catch {
+      this.setState({ error: "Can't find anything." });
     } finally {
       this.setState({ loading: false, result });
     }
