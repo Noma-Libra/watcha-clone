@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import Helmet from "react-helmet";
 import Section from "Components/Section";
 import Loader from "Components/Loader";
 import Message from "Components/Message";
@@ -13,56 +13,66 @@ const Container = styled.div`
 
 const Presenter = ({ topRated, popular, airingToday, loading, error }) =>
   loading ? (
-    <Loader />
+    <>
+      <Helmet>
+        <title>Loading... | ReactFlix </title>
+      </Helmet>
+      <Loader />
+    </>
   ) : (
-    <Container>
-      {topRated && topRated.length > 0 && (
-        <Section title="Top Rated Shows">
-          {topRated.map((x) => (
-            <Poster
-              key={x.id}
-              id={x.id}
-              imageUrl={x.poster_path}
-              title={x.original_name}
-              rating={x.vote_average}
-              year={x.first_air_date && x.first_air_date.split("-")[0]}
-              isMovie={false}
-            />
-          ))}
-        </Section>
-      )}
-      {popular && popular.length > 0 && (
-        <Section title="Popular Shows">
-          {popular.map((x) => (
-            <Poster
-              key={x.id}
-              id={x.id}
-              imageUrl={x.poster_path}
-              title={x.original_name}
-              rating={x.vote_average}
-              year={x.first_air_date && x.first_air_date.split("-")[0]}
-              isMovie={false}
-            />
-          ))}
-        </Section>
-      )}
-      {airingToday && airingToday.length > 0 && (
-        <Section title="Airing Today">
-          {airingToday.map((x) => (
-            <Poster
-              key={x.id}
-              id={x.id}
-              imageUrl={x.poster_path}
-              title={x.original_name}
-              rating={x.vote_average}
-              year={x.first_air_date && x.first_air_date.split("-")[0]}
-              isMovie={false}
-            />
-          ))}
-        </Section>
-      )}
-      {error && <Message color="#e74c3c" text={error} />}
-    </Container>
+    <>
+      <Helmet>
+        <title>TV Shows | ReactFlix </title>
+      </Helmet>
+      <Container>
+        {topRated && topRated.length > 0 && (
+          <Section title="Top Rated Shows">
+            {topRated.map((x) => (
+              <Poster
+                key={x.id}
+                id={x.id}
+                imageUrl={x.poster_path}
+                title={x.original_name}
+                rating={x.vote_average}
+                year={x.first_air_date && x.first_air_date.split("-")[0]}
+                isMovie={false}
+              />
+            ))}
+          </Section>
+        )}
+        {popular && popular.length > 0 && (
+          <Section title="Popular Shows">
+            {popular.map((x) => (
+              <Poster
+                key={x.id}
+                id={x.id}
+                imageUrl={x.poster_path}
+                title={x.original_name}
+                rating={x.vote_average}
+                year={x.first_air_date && x.first_air_date.split("-")[0]}
+                isMovie={false}
+              />
+            ))}
+          </Section>
+        )}
+        {airingToday && airingToday.length > 0 && (
+          <Section title="Airing Today">
+            {airingToday.map((x) => (
+              <Poster
+                key={x.id}
+                id={x.id}
+                imageUrl={x.poster_path}
+                title={x.original_name}
+                rating={x.vote_average}
+                year={x.first_air_date && x.first_air_date.split("-")[0]}
+                isMovie={false}
+              />
+            ))}
+          </Section>
+        )}
+        {error && <Message color="#e74c3c" text={error} />}
+      </Container>
+    </>
   );
 
 Presenter.propTypes = {
